@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">finances</string>
+    <string name="more_button">Кнопка "больше"</string>
 </resources>
