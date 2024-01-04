@@ -1,18 +1,30 @@
 package ru.acediat.finances.operations
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import ru.acediat.finances.core.StateViewModel
-import ru.acediat.finances.core.ViewState
-import ru.acediat.finances.model.Operation
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import ru.acediat.finances.domain.usecases.OperationUseCase
+import ru.acediat.finances.domain.usecases.OperationsEffect
+import ru.acediat.finances.domain.usecases.OperationsState
+import javax.inject.Inject
 
-sealed class OperationsState: ViewState {
-    object Loading: OperationsState()
-    data class OperationsReceived(val operations: List<Operation>): OperationsState()
-}
+class OperationsViewModel @Inject constructor(
+    private val operationsUseCase: OperationUseCase
+) : ViewModel() {
 
-class OperationsViewModel: StateViewModel<OperationsState>() {
+    private val _state = MutableStateFlow<OperationsState>(OperationsState.Loading)
+    val state = _state.asStateFlow()
 
-    override val _state: MutableStateFlow<OperationsState> = MutableStateFlow(OperationsState.Loading)
+    private val _effect = MutableSharedFlow<OperationsEffect>()
+    val effect = _effect.asSharedFlow()
 
+    fun getOperations() = viewModelScope.launch(Dispatchers.IO) {
+        _state.value = operationsUseCase.getOperations()
+    }
 
 }

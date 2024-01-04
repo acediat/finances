@@ -7,6 +7,8 @@
     <item type="dimen" name="text_margin">4dp</item>
 
     <item type="dimen" name="small_margin">3dp</item>
+    <item type="dimen" name="medium_margin">15dp</item>
+    <item type="dimen" name="large_margin">100dp</item>
 
     <item type="dimen" name="horizontal_bounds_margin">5dp</item>
     <item type="dimen" name="vertical_bounds_margin">4dp</item>
