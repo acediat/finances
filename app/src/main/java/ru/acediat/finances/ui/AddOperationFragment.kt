@@ -1,11 +1,13 @@
-package ru.acediat.finances.operations
+package ru.acediat.finances.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.launch
 import ru.acediat.finances.core.applicationContext
 import ru.acediat.finances.databinding.FragmentAddOperationBinding
 import javax.inject.Inject
@@ -18,7 +20,7 @@ class AddOperationFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentAddOperationBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: OperationsViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,8 +32,17 @@ class AddOperationFragment : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         applicationContext.appComponent.inject(this)
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[OperationsViewModel::class.java]
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
+        with(binding) {
+            saveButton.setOnClickListener {
+                lifecycleScope.launch {
+                    viewModel.addNewOperation(
+                        valueInput.text.toString().toDouble(), false, -1
+                    )
+                }
+            }
+        }
     }
 }

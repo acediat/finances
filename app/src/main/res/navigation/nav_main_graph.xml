@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/operations_fragment"
-        android:name="ru.acediat.finances.operations.OperationsFragment"
+        android:name="ru.acediat.finances.ui.SummaryFragment"
         android:label="@string/operations"
-        tools:layout="@layout/fragment_operations"/>
+        tools:layout="@layout/fragment_main"/>
 
 </navigation>

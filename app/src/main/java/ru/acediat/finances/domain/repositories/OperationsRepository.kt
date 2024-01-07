@@ -1,9 +1,9 @@
 package ru.acediat.finances.domain.repositories
 
 import ru.acediat.finances.domain.mappers.Mapper
-import ru.acediat.finances.entities.operations.Operation
-import ru.acediat.finances.model.db.OperationsDao
-import ru.acediat.finances.model.db.OperationsTable
+import ru.acediat.finances.ui.entities.operations.Operation
+import ru.acediat.finances.model.db.operations.OperationsDao
+import ru.acediat.finances.model.db.operations.OperationsTable
 import javax.inject.Inject
 
 interface OperationsRepository {

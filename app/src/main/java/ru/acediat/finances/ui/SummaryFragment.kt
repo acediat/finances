@@ -1,4 +1,4 @@
-package ru.acediat.finances.operations
+package ru.acediat.finances.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -15,26 +15,29 @@ import kotlinx.coroutines.launch
 import ru.acediat.finances.R
 import ru.acediat.finances.core.StateFragment
 import ru.acediat.finances.core.applicationContext
-import ru.acediat.finances.databinding.FragmentOperationsBinding
-import ru.acediat.finances.domain.usecases.OperationsState
-import ru.acediat.finances.entities.operations.OperationsListEntity
+import ru.acediat.finances.databinding.FragmentMainBinding
+import ru.acediat.finances.ui.entities.operations.Operation
 import javax.inject.Inject
 
-class OperationsFragment : StateFragment<OperationsState>() {
+class SummaryFragment : StateFragment<SummaryState>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var _binding: FragmentOperationsBinding? = null
+    private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private var operationsListSkeleton: Skeleton? = null
 
-    private lateinit var viewModel: OperationsViewModel
+    private lateinit var viewModel: MainViewModel
 
     private val operationsAdapter = ListDelegationAdapter(
         dividerDelegateAdapter(),
         operationDelegateAdapter(),
     )
+
+    private val accountsAdapter = CashAccountAdapter(0) { _, position ->
+        viewModel.selectedCashAccount = position
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,9 +45,9 @@ class OperationsFragment : StateFragment<OperationsState>() {
         savedInstanceState: Bundle?
     ): View {
         applicationContext.appComponent.inject(this)
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[OperationsViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
         Log.d("tag", viewModel.toString())
-        _binding = FragmentOperationsBinding.inflate(inflater, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -53,14 +56,23 @@ class OperationsFragment : StateFragment<OperationsState>() {
         binding.addButton.setOnClickListener {
             AddOperationFragment().show(childFragmentManager, "addOperationFragment")
         }
+        binding.accountsList.adapter = accountsAdapter
+        binding.operationsList.adapter = operationsAdapter
         lifecycleScope.launch { viewModel.state.collect (::onStateChanged) }
+        lifecycleScope.launch { viewModel.effect.collect(::onEffect) }
         viewModel.getOperations()
     }
 
-    override fun onStateChanged(newState: OperationsState) = when(newState) {
-        is OperationsState.Loading -> showLoadingState()
-        is OperationsState.EmptyOperations -> showEmptyState()
-        is OperationsState.SortedOperationsReceived -> showOperations(newState.operations)
+    override fun onStateChanged(newState: SummaryState) = when(newState) {
+        is SummaryState.Loading -> showLoadingState()
+        is SummaryState.Loaded.EmptyOperations -> showEmptyState(newState)
+        is SummaryState.Loaded.ShowingCashAccount -> showOperations(newState)
+        else -> {}
+    }
+
+    private fun onEffect(effect: SummaryEffect) = when(effect) {
+        is SummaryEffect.OperationSaved -> onOperationSaved(effect.operation)
+        is SummaryEffect.SaveError -> {}
     }
 
     private fun showLoadingState() {
@@ -69,15 +81,24 @@ class OperationsFragment : StateFragment<OperationsState>() {
         operationsListSkeleton?.showSkeleton()
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(state: SummaryState.Loaded.EmptyOperations) {
         setEmptyVisibility(true)
         operationsListSkeleton?.showOriginal()
+        accountsAdapter.setItems(state.cashAccounts)
     }
 
-    private fun showOperations(operations: List<OperationsListEntity>) {
+    private fun showOperations(state: SummaryState.Loaded.ShowingCashAccount) {
         setEmptyVisibility(false)
-        binding.operationsList.adapter = operationsAdapter.apply { items = operations }
         operationsListSkeleton?.showOriginal()
+        operationsAdapter.apply {
+            items = state.operations
+            notifyDataSetChanged()
+        }
+        accountsAdapter.setItems(state.cashAccounts)
+    }
+
+    private fun onOperationSaved(operation: Operation) {
+        viewModel.getOperations()
     }
 
     private fun setEmptyVisibility(visibility: Boolean) {

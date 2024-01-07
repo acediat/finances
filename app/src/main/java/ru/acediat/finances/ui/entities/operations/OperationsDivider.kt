@@ -1,4 +1,4 @@
-package ru.acediat.finances.entities.operations
+package ru.acediat.finances.ui.entities.operations
 
 import org.threeten.bp.LocalDate
 

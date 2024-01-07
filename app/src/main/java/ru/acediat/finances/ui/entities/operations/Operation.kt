@@ -1,12 +1,13 @@
-package ru.acediat.finances.entities.operations
+package ru.acediat.finances.ui.entities.operations
 
-import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import java.math.BigDecimal
 
 data class Operation(
-    val id: Long,
+    val id: Long = 0,
     val value: BigDecimal,
     //val category: Category,
-    val date: LocalDate,
+    val date: LocalDateTime,
     val hiddenFromAnalytics: Boolean,
+    val cashAccountId: Long,
 ): OperationsListEntity()

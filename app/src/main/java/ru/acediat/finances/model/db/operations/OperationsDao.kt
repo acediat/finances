@@ -1,4 +1,4 @@
-package ru.acediat.finances.model.db
+package ru.acediat.finances.model.db.operations
 
 import androidx.room.Dao
 import androidx.room.Insert
