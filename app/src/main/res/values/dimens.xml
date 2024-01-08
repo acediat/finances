@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="dimen" name="default_radius">10dp</item>
+    <item type="dimen" name="default_radius_margin">12dp</item>
+    <item type="dimen" name="default_radius_padding">12dp</item>
+
+    <item type="dimen" name="text_margin">4dp</item>
+
+    <item type="dimen" name="small_margin">3dp</item>
+    <item type="dimen" name="small_radius_margin">6dp</item>
+    <item type="dimen" name="medium_margin">15dp</item>
+    <item type="dimen" name="large_margin">100dp</item>
+
+    <item type="dimen" name="horizontal_bounds_margin">5dp</item>
+    <item type="dimen" name="vertical_bounds_margin">4dp</item>
+
+    <item type="dimen" name="default_elevation">4dp</item>
+
+    <item type="dimen" name="divider_size">2dp</item>
+
+    <item type="dimen" name="small_text_size">10dp</item>
+    <item type="dimen" name="text_size">14dp</item>
+</resources>
