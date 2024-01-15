@@ -1,6 +1,5 @@
 package ru.acediat.finances.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -63,10 +62,6 @@ class MainViewModel @Inject constructor(
                 SummaryState.Loaded.EmptyOperations(cashAccountWithOperations.map { it.account }, value)
             } else {
                 createShowingCashAccountState()
-            }
-            Log.d("tag", "lol_lol")
-            cashAccountWithOperations.forEach {
-                Log.d("tag", it.account.toString())
             }
             _state.value = newState
         }

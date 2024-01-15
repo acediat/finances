@@ -18,6 +18,6 @@ class AssetsFolder @Inject constructor(
     fun getAllIcons() = assets.list(ICONS)?.map { getDrawable(it) } ?: listOf()
 
     companion object {
-        const val ICONS = "/icons/"
+        const val ICONS = "icons/"
     }
 }

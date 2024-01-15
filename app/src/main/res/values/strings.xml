@@ -3,4 +3,7 @@
     <string name="more_button">Кнопка "больше"</string>
     <string name="operations">Операции</string>
     <string name="operations_summary">Сумма: %s</string>
+    <string name="add">Добавить</string>
+    <string name="summary">Сумма</string>
+    <string name="cash_accounts">Счет</string>
 </resources>

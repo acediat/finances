@@ -16,6 +16,7 @@ import ru.acediat.finances.R
 import ru.acediat.finances.core.StateFragment
 import ru.acediat.finances.core.applicationContext
 import ru.acediat.finances.databinding.FragmentMainBinding
+import ru.acediat.finances.model.AssetsFolder
 import ru.acediat.finances.ui.entities.operations.Operation
 import javax.inject.Inject
 
@@ -23,6 +24,9 @@ class SummaryFragment : StateFragment<SummaryState>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var assetsFolder: AssetsFolder
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
@@ -35,9 +39,7 @@ class SummaryFragment : StateFragment<SummaryState>() {
         operationDelegateAdapter(),
     )
 
-    private val accountsAdapter = CashAccountAdapter(0) { _, position ->
-        viewModel.selectedCashAccount = position
-    }
+    private var accountsAdapter: CashAccountAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +55,9 @@ class SummaryFragment : StateFragment<SummaryState>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        accountsAdapter = CashAccountAdapter(0, assetsFolder) { _, position ->
+            viewModel.selectedCashAccount = position
+        }
         binding.addButton.setOnClickListener {
             AddOperationFragment().show(childFragmentManager, "addOperationFragment")
         }
@@ -84,7 +89,7 @@ class SummaryFragment : StateFragment<SummaryState>() {
     private fun showEmptyState(state: SummaryState.Loaded.EmptyOperations) {
         setEmptyVisibility(true)
         operationsListSkeleton?.showOriginal()
-        accountsAdapter.setItems(state.cashAccounts)
+        accountsAdapter?.setItems(state.cashAccounts)
     }
 
     private fun showOperations(state: SummaryState.Loaded.ShowingCashAccount) {
@@ -94,7 +99,7 @@ class SummaryFragment : StateFragment<SummaryState>() {
             items = state.operations
             notifyDataSetChanged()
         }
-        accountsAdapter.setItems(state.cashAccounts)
+        accountsAdapter?.setItems(state.cashAccounts)
     }
 
     private fun onOperationSaved(operation: Operation) {

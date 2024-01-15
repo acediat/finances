@@ -34,15 +34,9 @@ class SummaryUseCaseImpl @Inject constructor(
             iconFileName = "billing_card.svg",
         )
         val allOperations = mutableListOf<Operation>().apply {
-            userAccounts.forEach {
-                addAll(it.operations)
-            }
+            userAccounts.forEach { addAll(it.operations) }
         }
         userAccounts.add(CashAccountWithOperations(allAccount, allOperations))
-        Log.d("tag", "start")
-        userAccounts.forEach {
-            Log.d("tag", it.toString())
-        }
         return userAccounts
     }
 
